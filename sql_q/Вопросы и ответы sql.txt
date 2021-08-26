@@ -1,0 +1,64 @@
+Первое задание:
+SELECT tPerson.name, tOrg.name FROM tPerson LEFT OUTER JOIN tOrg ON tPerson.oid = tOrg.oid;
+
+Второе задание:
+SELECT tOrg.name FROM tOrg LEFT JOIN tPerson ON tOrg.oid = tPerson.oid WHERE tPerson.oid IS NULL;
+
+Третье задание:
+Вариант 1:
+SELECT tOrg.name, COUNT(tOrg.name) FROM tOrg LEFT JOIN tPerson ON tPerson.oid = tOrg.oid WHERE tPerson.oid IS NOT NULL GROUP BY tOrg.name;
+Вариант 2:
+SELECT tOrg.name, COUNT(tPerson.pid) FROM tOrg LEFT JOIN tPerson ON tOrg.oid = tPerson.oid GROUP BY tOrg.name;
+
+Четвертое задание:
+USE master
+GO
+CREATE FUNCTION getFullOrgName(@oid as int) RETURNS nvarchar(MAX) AS
+BEGIN
+
+DECLARE @text nvarchar(100);
+DECLARE @temp nvarchar(100);
+DECLARE @poid int;
+
+WHILE @oid IS NOT NULL
+BEGIN
+	SET @poid = (SELECT poid FROM test.tOrg WHERE @oid = tOrg.oid);
+	SET @temp = (SELECT name FROM test.tOrg WHERE @oid = tOrg.oid);
+	SET @text = (SELECT STRING_AGG (CONVERT(NVARCHAR(MAX), CONCAT(CONCAT('/', @temp), @text)), ''));
+	SET @oid = @poid;
+END
+
+RETURN @text;
+END;
+GO
+
+SELECT master.dbo.getFullOrgName(9);
+Пятое задание:
+INSERT INTO tAccountRest SELECT aid, stDate, balance FROM <tablename> - если таблица, из которой мы копируем, находится в этой же базе.
+Если таблица находится в Excel файле, то можно воспользоваться драйвером OLEDB, используя следующий код:
+sp_configure 'show advanced options', 1;
+RECONFIGURE;
+GO
+sp_configure 'Ad Hoc Distributed Queries', 1;
+RECONFIGURE;
+GO
+
+EXEC sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0', N'AllowInProcess', 1
+GO
+EXEC sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0', N'DynamicParameters', 1
+GO
+
+INSERT INTO test.tAccountRest SELECT aid, stDate, balance FROM OPENROWSET
+   (
+    'Microsoft.ACE.OLEDB.12.0',
+    'Excel 12.0;
+     Database=F:\Book1.xlsx',
+    'SELECT * FROM [Sheet1$]'
+   );  
+
+Шестое задание:
+SELECT tAccount.accNumber, tAccountRest.stDate, tAccountRest.balance
+FROM test.tAccount LEFT OUTER JOIN test.tAccountRest ON tAccountRest.stDate = (SELECT MAX(stDate) FROM test.tAccountRest WHERE tAccount.aid = tAccountRest.aid);
+
+Седьмое задание:
+SELECT MIN(stDate) AS stDate, DATEDIFF(day, MIN(stDate), MAX(stDate)) AS stDays,  Deal, SUM(stSum) AS stSum FROM test.tDebt GROUP BY tDebt.Deal;
