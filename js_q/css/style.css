@@ -1,0 +1,74 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Roboto, sans-serif
+}
+
+.content {
+    padding: 70px 0 240px 0;
+    position: relative
+}
+
+.container {
+    display: flex
+}
+
+.bgc_y {
+    position: absolute;
+    width: 50%;
+    height: 499px;
+    background: rgba(255, 222, 222, 0);
+    z-index: -1;
+    top: -50px;
+    left: 0
+}
+
+.content__text {
+    width: 50%
+}
+
+.content__right {
+    width: 50%
+}
+
+.left_block {
+    margin: auto;
+    width: 300px;
+}
+
+.selector {
+    border: 1px solid grey;
+    padding: 10px;
+    width: 100%;
+    margin: 5px;
+}
+
+.btn {
+    border: 1px solid grey;
+    padding: 10px;
+    margin-left: 35px;
+    width: 100px;
+}
+
+table {
+    width: 500px;
+    border: 1px solid grey;
+}
+
+td {
+    padding: 5px;
+    border: 1px solid grey;
+}
+
+.check_prof {
+    padding: 10px;
+}
+
+.name {
+    width: 270px;
+}
+
+.org {
+    width: 118px;
+}
